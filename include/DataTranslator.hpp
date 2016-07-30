@@ -15,6 +15,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <cstring>
 #include <vector>
 
 //
@@ -24,15 +25,7 @@
 //
 // - std::size_t size(string) const
 //
-// - bool has_bool(string) const;
-// - bool has_int(string) const;
-// - bool has_float(string) const;
-// - bool has_string(string) const;
-//
-// - bool has_bool_sequence(string) const;
-// - bool has_int_sequence(string) const;
-// - bool has_float_sequence(string) const;
-// - bool has_string_sequence(string) const;
+// - bool has(string) const;
 //
 // - bool_type   as_bool(string) const;
 // - int_type    as_int(string) const;
@@ -83,9 +76,9 @@ namespace serial {
   /// \tparam KeyStringT The type to use for key strings
   ////////////////////////////////////////////////////////////////////////////
   template<typename T,
-           typename BoolT  = bool,
-           typename IntT   = int,
-           typename FloatT = float,
+           typename BoolT   = bool,
+           typename IntT    = int,
+           typename FloatT  = float,
            typename StringT = std::string,
            typename KeyStringT = std::string>
   class DataTranslator final
@@ -116,12 +109,6 @@ namespace serial {
     typedef int_type    value_type::*int_member;   ///< Class pointer to long member
     typedef float_type  value_type::*float_member; ///< Class pointer to float member
     typedef string_type value_type::*string_member;///< Class pointer to string member
-
-    // Member pointers to array types (pointers)
-    typedef bool_type*   value_type::*bool_array_member;   ///< Class pointer to bool array member
-    typedef int_type*    value_type::*int_array_member;    ///< Class pointer to long array member
-    typedef float_type*  value_type::*float_array_member;  ///< Class pointer to float array member
-    typedef string_type* value_type::*string_array_member; ///< Class pointer to string array member
 
     // Member pointers to vector types
     typedef std::vector<bool_type>   value_type::*bool_vector_member;  ///< Class pointer to bool vector member
@@ -191,44 +178,6 @@ namespace serial {
     this_type& add_string_member( const key_string_type& name,
                                   string_member member );
 
-    // Array types
-
-    /// \brief Adds a boolean array pointer-to-member
-    ///
-    /// \param name the name of the configuration
-    /// \param member the bool array pointer-to-member to translate
-    /// \param size the size of the array
-    ///
-    /// \return reference to (*this) to allow chaining calls
-    this_type& add_bool_array_member( const key_string_type& name, bool_array_member member, size_type size );
-
-    /// \brief Adds an integer array pointer-to-member
-    ///
-    /// \param name the name of the configuration
-    /// \param member the integer array pointer-to-member to translate
-    /// \param size the size of the array
-    ///
-    /// \return reference to (*this) to allow chaining calls
-    this_type& add_int_array_member( const key_string_type& name, int_array_member member, size_type size );
-
-    /// \brief Adds a floating point array pointer-to-member
-    ///
-    /// \param name the name of the configuration
-    /// \param member the floating point array pointer-to-member to translate
-    /// \param size the size of the array
-    ///
-    /// \return reference to (*this) to allow chaining calls
-    this_type& add_float_array_member( const key_string_type& name, float_array_member member, size_type size );
-
-    /// \brief Adds a string array pointer-to-member
-    ///
-    /// \param name the name of the configuration
-    /// \param member the floating point array pointer-to-member to translate
-    /// \param size the size of the array
-    ///
-    /// \return reference to (*this) to allow chaining calls
-    this_type& add_string_array_member( const key_string_type& name, string_array_member member, size_type size );
-
     // Vector types
 
     /// \brief Adds a boolean vector pointer-to-member
@@ -271,41 +220,27 @@ namespace serial {
     // Scalar types
 
     /// \copydoc DataTranslator::add_bool_member
-    this_type& add_member( const key_string_type& name, bool_member   member );
+    this_type& add_member( const key_string_type& name, bool_member member );
 
     /// \copydoc DataTranslator::add_int_member
-    this_type& add_member( const key_string_type& name, int_member    member );
+    this_type& add_member( const key_string_type& name, int_member member );
 
     /// \copydoc DataTranslator::add_float_member
-    this_type& add_member( const key_string_type& name, float_member  member );
+    this_type& add_member( const key_string_type& name, float_member member );
 
     /// \copydoc DataTranslator::add_string_member
     this_type& add_member( const key_string_type& name, string_member member );
 
-    // Array types
-
-    /// \copydoc DataTranslator::add_bool_array_member
-    this_type& add_member( const key_string_type& name, bool_array_member   member, size_type size );
-
-    /// \copydoc DataTranslator::add_int_array_member
-    this_type& add_member( const key_string_type& name, int_array_member    member, size_type size );
-
-    /// \copydoc DataTranslator::add_float_array_member
-    this_type& add_member( const key_string_type& name, float_array_member  member, size_type size );
-
-    /// \copydoc DataTranslator::add_string_array_member
-    this_type& add_member( const key_string_type& name, string_array_member member, size_type size );
-
     // Vector types
 
     /// \copydoc DataTranslator::add_bool_vector_member
-    this_type& add_member( const key_string_type& name, bool_vector_member   member );
+    this_type& add_member( const key_string_type& name, bool_vector_member member );
 
     /// \copydoc DataTranslator::add_int_vector_member
-    this_type& add_member( const key_string_type& name, int_vector_member    member );
+    this_type& add_member( const key_string_type& name, int_vector_member member );
 
     /// \copydoc DataTranslator::add_float_vector_member
-    this_type& add_member( const key_string_type& name, float_vector_member  member );
+    this_type& add_member( const key_string_type& name, float_vector_member member );
 
     /// \copydoc DataTranslator::add_string_vector_member
     this_type& add_member( const key_string_type& name, string_vector_member member );
@@ -334,28 +269,39 @@ namespace serial {
                                  size_type size,
                                  const Translator& data ) const;
 
+    /// \brief Translates a sequence of structures into the appropriate
+    ///        data type
+    ///
+    /// \param it the output iterator to use for insertions
+    /// \param data the data to insert
+    /// \return the number of members translated in all entries
+    template<typename OutputIterator, typename Translator>
+    size_type translate_sequence( OutputIterator it,
+                                  const Translator& data ) const;
+
+    /// \brief Translates a sequence of structures into the appropriate
+    ///        data type with a bounded size
+    ///
+    /// \param it the output iterator to use for insertions
+    /// \param size the max number of entries to translate
+    /// \param data the data to insert
+    /// \return the number of members translated in all entries
+    template<typename OutputIterator, typename Translator>
+    size_type translate_sequence( OutputIterator it,
+                                  std::size_t size,
+                                  const Translator& data ) const;
+
+
     //-------------------------------------------------------------------------
     // Private Member Types
     //-------------------------------------------------------------------------
   private:
-
-    // Array entries must contain their respective sizes with the pointers
-    typedef std::pair<bool_array_member, size_type>   bool_array_entry;
-    typedef std::pair<int_array_member, size_type>    int_array_entry;
-    typedef std::pair<float_array_member, size_type>  float_array_entry;
-    typedef std::pair<string_array_member, size_type> string_array_entry;
 
     // Scalar member mapping
     typedef std::unordered_map<std::string, bool_member>   bool_member_map;
     typedef std::unordered_map<std::string, int_member>    int_member_map;
     typedef std::unordered_map<std::string, float_member>  float_member_map;
     typedef std::unordered_map<std::string, string_member> string_member_map;
-
-    // Array member mapping
-    typedef std::unordered_map<std::string, bool_array_entry>   bool_array_member_map;
-    typedef std::unordered_map<std::string, int_array_entry>    int_array_member_map;
-    typedef std::unordered_map<std::string, float_array_entry>  float_array_member_map;
-    typedef std::unordered_map<std::string, string_array_entry> string_array_member_map;
 
     // Vector member mapping
     typedef std::unordered_map<std::string, bool_vector_member>   bool_vector_member_map;
@@ -373,12 +319,6 @@ namespace serial {
     int_member_map    m_int_members;    ///< Map of int member pointers
     float_member_map  m_float_members;  ///< Map of float member pointers
     string_member_map m_string_members; ///< Map of string member pointers
-
-    // Array members
-    bool_array_member_map   m_bool_array_members;   ///< Map of bool array member pointers
-    int_array_member_map    m_int_array_members;    ///< Map of int array member pointers
-    float_array_member_map  m_float_array_members;  ///< Map of float array member pointers
-    string_array_member_map m_string_array_members; ///< Map of string array member pointers
 
     // Vector members
     bool_vector_member_map   m_bool_vector_members;   ///< Vector of bool array member pointers
@@ -400,16 +340,6 @@ namespace serial {
     template<typename Translator>
     size_type translate_scalar_data( value_type* object,
                                      const Translator& data ) const;
-
-    /// \brief Translate all array entries into the specified objects
-    ///
-    /// \param object the object to translate data into
-    /// \param data the data to translate
-    ///
-    /// \return the number of array successfully translated
-    template<typename Translator>
-    size_type translate_array_data( value_type* object,
-                                    const Translator& data ) const;
 
     /// \brief Translate all vector entries into the specified objects
     ///

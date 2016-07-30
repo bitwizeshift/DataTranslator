@@ -9,14 +9,16 @@ by providing a Translation scheme.
 - Compatible with C++11 and above
 - Translation of arbitrary deserialized data through use of an adapter
 - Configurable value types, allowing custom pointer-to-members to be used
-- Support for both arrays (through pointers), or `std::vector`
+- Support for both scalar values and sequences of entires through `std::vector`
 - Lightweight implementation to allow for quick translation of types 
+
+## How It Works
 
 ## Use
 
 ### Constructing a `DataTranslator`
 
-To construct a data translator, simply construct a `DataTranslator` templated on the type of the `struct` or `class` to translate. 
+To construct a data translator, include the hader and construct a `DataTranslator` templated on the type of the `struct` or `class` to translate. 
 Then, make calls to `add_member` supplying the configuration name and the pointer-to-members that are to be translated. 
 
 Calls to `add_member` can be chained in order to create a single `const` instance of a `DataTranslator`.
@@ -110,14 +112,7 @@ The Translator concept is:
 | expression                           | return                       | semantics                                                                                                                                               |
 |--------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `t.size( name )`                     | convertible to `std::size_t` | Determines the size of a non-scalar node with the given `name`. This is undefined for scalar types.                                                     |
-| `t.has_bool( name )`                  | convertible to `bool`        | Returns `true` if `t` contains a `BoolT` node with name `name`                                                                                          |
-| `t.has_int( name )`                  | convertible to `bool`        | Returns `true` if `t` contains an `IntT` node with name `name`                                                                                          |
-| `t.has_float( name )`                | convertible to `bool`        | Returns `true` if `t` contains an `FloatT` node with name `name`                                                                                        |
-| `t.has_string( name )`               | convertible to `bool`        | Returns `true` if `t` contains a `StringT` node with name `name`                                                                                        |
-| `t.has_bool_sequence( name )`         | convertible to `bool`        | Returns `true` if `t` contains a sequence (collection of entries) of `BoolT` node with name `name`                                                      |
-| `t.has_int_sequence( name )`         | convertible to `bool`        | Returns `true` if `t` contains a sequence (collection of entries) of `IntT` node with name `name`                                                       |
-| `t.has_float_sequence( name )`       | convertible to `bool`        | Returns `true` if `t` contains a sequence (collection of entries) of `FloatT` node with name `name`                                                     |
-| `t.has_string_sequence( name )`      | convertible to `bool`        | Returns `true` if `t` contains a sequence (collection of entries) of `StringT` node with name `name`                                                    |
+| `t.has( name )`                  | convertible to `bool`        | Returns `true` if `t` contains a node with the given name                                                                                         |
 | `t.as_bool( name )`                  | convertible to `BoolT`       | Returns the result of the node with identifier `name` if it exists. Behavior is undefined otherwise.                                                    |
 | `t.as_int( name )`                   | convertible to `IntT`        | Returns the result of the node with identifier `name` if it exists. Behavior is undefined otherwise.                                                    |
 | `t.as_float( name )`                 | convertible to `FloatT`      | Returns the result of the node with identifier `name` if it exists. Behavior is undefined otherwise.                                                    |
@@ -222,5 +217,4 @@ hello world
 
 ## Todo
 
-- Provide proper `noexcept` specifications
 - Support array and vector translations

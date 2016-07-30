@@ -12,18 +12,10 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::members()
     const noexcept
   {
-    return m_bool_members.size() +
-           m_int_members.size() +
-           m_float_members() +
-           m_string_members() +
-           m_bool_array_members.size() +
-           m_int_array_members.size() +
-           m_float_array_members.size() +
-           m_string_array_members.size() +
-           m_bool_vector_members.size() +
-           m_int_vector_members.size() +
-           m_float_vector_members.size() +
-           m_string_vector_members.size();
+    return (m_bool_members.size() + m_bool_vector_members.size() +
+            m_int_members.size()  + m_int_vector_members.size() +
+            m_float_members()     + m_float_vector_members.size() +
+            m_string_members()    + m_string_vector_members.size());
   }
 
   //--------------------------------------------------------------------------
@@ -63,52 +55,6 @@ namespace serial {
                                                     string_member member )
   {
     m_string_members[ name ] = member;
-    return (*this);
-  }
-
-  //--------------------------------------------------------------------------
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_bool_array_member( const key_string_type& name,
-                                                        bool_array_member member,
-                                                        size_type size )
-  {
-    bool_array_entry entry(member,size);
-    m_bool_array_members[ name ] = entry;
-    return (*this);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_int_array_member( const key_string_type& name,
-                                                       int_array_member member,
-                                                       size_type size )
-  {
-    int_array_entry entry(member,size);
-    m_int_array_members[ name ] = entry;
-    return (*this);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_float_array_member( const key_string_type& name,
-                                                         float_array_member member,
-                                                         size_type size )
-  {
-    float_array_entry entry(member,size);
-    m_float_array_members[ name ] = entry;
-    return (*this);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_string_array_member( const key_string_type& name,
-                                                          string_array_member member,
-                                                          size_type size )
-  {
-    string_array_entry entry(member,size);
-    m_string_array_members[ name ] = entry;
     return (*this);
   }
 
@@ -191,44 +137,6 @@ namespace serial {
   template<typename T, typename B, typename I, typename F, typename S, typename K>
   inline typename DataTranslator<T,B,I,F,S,K>::this_type&
     DataTranslator<T,B,I,F,S,K>::add_member( const key_string_type& name,
-                                             bool_array_member member,
-                                             size_type size )
-  {
-    return add_bool_array_member(name,member,size);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_member( const key_string_type& name,
-                                             int_array_member member,
-                                             size_type size )
-  {
-    return add_int_array_member(name,member,size);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_member( const key_string_type& name,
-                                             float_array_member member,
-                                             size_type size )
-  {
-    return add_float_array_member(name,member,size);
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_member( const key_string_type& name,
-                                             string_array_member member,
-                                             size_type size )
-  {
-    return add_string_array_member(name,member,size);
-  }
-
-  //--------------------------------------------------------------------------
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  inline typename DataTranslator<T,B,I,F,S,K>::this_type&
-    DataTranslator<T,B,I,F,S,K>::add_member( const key_string_type& name,
                                              bool_vector_member member )
   {
     return add_bool_vector_member(name,member);
@@ -295,7 +203,7 @@ namespace serial {
     // the first one is created.
     if(size > 1 )
     {
-      memcpy( &objects[1], &objects[0], (size - 1) * sizeof(value_type) );
+      std::memcpy( &objects[1], &objects[0], (size - 1) * sizeof(value_type) );
     }
     return result;
 
@@ -318,7 +226,7 @@ namespace serial {
     {
       const bool_member ptr = pair.second;
 
-      if(data.has_bool(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         (*object).*ptr = data.as_bool(pair.first);
@@ -329,7 +237,7 @@ namespace serial {
     {
       const int_member ptr = pair.second;
 
-      if(data.has_int(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         (*object).*ptr = data.as_int(pair.first);
@@ -340,7 +248,7 @@ namespace serial {
     {
       const float_member ptr = pair.second;
 
-      if(data.has_float(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         (*object).*ptr = data.as_float(pair.first);
@@ -351,97 +259,10 @@ namespace serial {
     {
       const string_member ptr = pair.second;
 
-      if(data.has_string(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         (*object).*ptr = data.as_string(pair.first);
-      }
-    }
-    return count;
-  }
-
-  template<typename T, typename B, typename I, typename F, typename S, typename K>
-  template<typename Translator>
-  inline typename DataTranslator<T,B,I,F,S,K>::size_type
-    DataTranslator<T,B,I,F,S,K>::translate_array_data( value_type* object,
-                                                       const Translator& data )
-    const
-  {
-    size_type count = 0;
-
-    for( auto const& pair : m_bool_array_members )
-    {
-      const bool_array_member ptr = pair.second.first;
-
-      if(data.has_bool_sequence(pair.first))
-      {
-        if(data.size(pair.first) >= pair.second.second)
-          throw std::out_of_range("Too many entries to fit into array");
-
-        bool_type* array_ptr = ((*object).*ptr);
-
-        ++count;
-        data.template as_bool_sequence(pair.first, [&](const bool_type& value)
-        {
-          (*array_ptr++) = value;
-        });
-      }
-    }
-
-    for( auto const& pair : m_int_array_members )
-    {
-      const int_array_member ptr = pair.second.first;
-
-      if(data.has_int_sequence(pair.first))
-      {
-        if(data.size(pair.first) >= pair.second.second)
-          throw std::out_of_range("Too many entries to fit into array");
-
-        int_type* array_ptr = ((*object).*ptr);
-
-        ++count;
-        data.template as_int_sequence(pair.first, [&](const int_type& value)
-        {
-          (*array_ptr++) = value;
-        });
-      }
-    }
-
-    for( auto const& pair : m_float_array_members )
-    {
-      const float_array_member ptr = pair.second.first;
-
-      if(data.has_float_sequence(pair.first))
-      {
-        if(data.size(pair.first) >= pair.second.second)
-          throw std::out_of_range("Too many entries to fit into array");
-
-        float_type* array_ptr = ((*object).*ptr);
-
-        ++count;
-        data.template as_float_sequence(pair.first, [&](const float_type& value)
-        {
-          (*array_ptr++) = value;
-        });
-      }
-    }
-
-    for( auto const& pair : m_string_array_members )
-    {
-      const string_array_member ptr = pair.second.first;
-
-      if(data.has_string_sequence(pair.first))
-      {
-        if(data.size(pair.first) >= pair.second.second)
-          throw std::out_of_range("Too many entries to fit into array");
-
-        string_type* array_ptr = ((*object).*ptr);
-
-        ++count;
-        data.template as_string_sequence(pair.first, [&](const string_type& value)
-        {
-          (*array_ptr++) = value;
-        });
       }
     }
     return count;
@@ -460,7 +281,7 @@ namespace serial {
     {
       const bool_vector_member ptr = pair.second;
 
-      if(data.has_bool_sequence(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         data.template as_bool_sequence(pair.first, [&](const bool_type& value){
@@ -473,7 +294,7 @@ namespace serial {
     {
       const int_vector_member ptr = pair.second;
 
-      if(data.has_int_sequence(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         data.template as_int_sequence(pair.first, [&](const int_type& value){
@@ -486,7 +307,7 @@ namespace serial {
     {
       const float_vector_member ptr = pair.second;
 
-      if(data.has_float_sequence(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         data.template as_float_sequence(pair.first, [&](const float_type& value){
@@ -499,7 +320,7 @@ namespace serial {
     {
       const string_vector_member ptr = pair.second;
 
-      if(data.has_string_sequence(pair.first))
+      if(data.has(pair.first))
       {
         ++count;
         data.template as_string_sequence(pair.first, [&](const string_type& value){
