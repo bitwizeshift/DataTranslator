@@ -171,29 +171,34 @@ namespace serial {
   //--------------------------------------------------------------------------
 
   template<typename T, typename B, typename I, typename F, typename S, typename K>
-  template<typename Translator>
-  inline typename DataTranslator<T,B,I,F,S,K>::size_type
+  template<typename ScalarTranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
     DataTranslator<T,B,I,F,S,K>::translate( value_type* object,
-                                            const Translator& data )
+                                            const ScalarTranslationScheme& data )
     const
   {
+    constexpr concepts::ScalarTranslationScheme<ScalarTranslationScheme,B,I,F,S,K> validation;
+    (void) validation;
+
     size_type count = 0;
 
     count += translate_scalar_data(object,data);
-    count += translate_array_data(object,data);
     count += translate_vector_data(object,data);
 
     return count;
   }
 
   template<typename T, typename B, typename I, typename F, typename S, typename K>
-  template<typename Translator>
-  inline typename DataTranslator<T,B,I,F,S,K>::size_type
+  template<typename ScalarTranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
     DataTranslator<T,B,I,F,S,K>::translate_uniform( value_type* objects,
                                                     size_type size,
-                                                    const Translator& data )
+                                                    const ScalarTranslationScheme& data )
     const
   {
+    constexpr concepts::ScalarTranslationScheme<ScalarTranslationScheme,B,I,F,S,K> validation;
+    (void) validation;
+
     if(size==0) return 0;
 
     // Translate the first object
@@ -209,15 +214,58 @@ namespace serial {
 
   }
 
+  template<typename T, typename B, typename I, typename F, typename S, typename K>
+  template<typename OutputIterator, typename SequenceTranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
+    DataTranslator<T,B,I,F,S,K>::translate_sequence( OutputIterator it,
+                                                     SequenceTranslationScheme& data )
+    const
+  {
+    constexpr concepts::SequenceTranslationScheme<SequenceTranslationScheme,B,I,F,S,K> validation;
+    (void) validation;
+
+    size_type entries = 0;
+    do{
+      value_type value;
+      entries += translate( &value, data );
+      (*it) = std::move(value);
+      ++it;
+    } while( data.next() );
+    return entries;
+  }
+
+  template<typename T, typename B, typename I, typename F, typename S, typename K>
+  template<typename OutputIterator, typename SequenceTranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
+    DataTranslator<T,B,I,F,S,K>::translate_sequence( OutputIterator it,
+                                                     size_type size,
+                                                     SequenceTranslationScheme& data )
+    const
+  {
+    constexpr concepts::SequenceTranslationScheme<SequenceTranslationScheme,B,I,F,S,K> validation;
+    (void) validation;
+
+    size_type count   = 0;
+    size_type entries = 0;
+    do{
+      value_type value;
+      entries += translate( &value, data );
+      (*it) = std::move(value);
+      ++it;
+      ++count;
+    } while( data.next() && count < size );
+    return entries;
+  }
+
   //--------------------------------------------------------------------------
   // Translate Members
   //--------------------------------------------------------------------------
 
   template<typename T, typename B, typename I, typename F, typename S, typename K>
-  template<typename Translator>
-  inline typename DataTranslator<T,B,I,F,S,K>::size_type
+  template<typename TranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
     DataTranslator<T,B,I,F,S,K>::translate_scalar_data( value_type* object,
-                                                        const Translator& data )
+                                                        const TranslationScheme& data )
     const
   {
     size_type count = 0;
@@ -269,10 +317,10 @@ namespace serial {
   }
 
   template<typename T, typename B, typename I, typename F, typename S, typename K>
-  template<typename Translator>
-  inline typename DataTranslator<T,B,I,F,S,K>::size_type
+  template<typename TranslationScheme>
+  typename DataTranslator<T,B,I,F,S,K>::size_type
     DataTranslator<T,B,I,F,S,K>::translate_vector_data( value_type* object,
-                                                        const Translator& data )
+                                                        const TranslationScheme& data )
     const
   {
     size_type count = 0;
@@ -284,7 +332,9 @@ namespace serial {
       if(data.has(pair.first))
       {
         ++count;
-        data.template as_bool_sequence(pair.first, [&](const bool_type& value){
+        ((*object).*ptr).reserve(data.size(pair.first));
+        data.template as_bool_sequence(pair.first, [&](const bool_type& value)
+        {
           ((*object).*ptr).push_back(value);
         });
       }
@@ -297,7 +347,9 @@ namespace serial {
       if(data.has(pair.first))
       {
         ++count;
-        data.template as_int_sequence(pair.first, [&](const int_type& value){
+        ((*object).*ptr).reserve(data.size(pair.first));
+        data.template as_int_sequence(pair.first, [&](const int_type& value)
+        {
           ((*object).*ptr).push_back(value);
         });
       }
@@ -310,7 +362,9 @@ namespace serial {
       if(data.has(pair.first))
       {
         ++count;
-        data.template as_float_sequence(pair.first, [&](const float_type& value){
+        ((*object).*ptr).reserve(data.size(pair.first));
+        data.template as_float_sequence(pair.first, [&](const float_type& value)
+        {
           ((*object).*ptr).push_back(value);
         });
       }
@@ -323,7 +377,9 @@ namespace serial {
       if(data.has(pair.first))
       {
         ++count;
-        data.template as_string_sequence(pair.first, [&](const string_type& value){
+        ((*object).*ptr).reserve(data.size(pair.first));
+        data.template as_string_sequence(pair.first, [&](const string_type& value)
+        {
           ((*object).*ptr).push_back(value);
         });
       }

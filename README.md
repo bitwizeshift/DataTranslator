@@ -16,12 +16,14 @@ by providing a Translation scheme.
 
 ## Use
 
-### Constructing a `DataTranslator`
+###Constructing a `DataTranslator`
 
-To construct a data translator, include the hader and construct a `DataTranslator` templated on the type of the `struct` or `class` to translate. 
+To construct a data translator, include the header '`DataTranslator.hpp`' and construct a `serial::DataTranslator` templated on the type of the `struct` or `class` to translate. 
 Then, make calls to `add_member` supplying the configuration name and the pointer-to-members that are to be translated. 
 
 Calls to `add_member` can be chained in order to create a single `const` instance of a `DataTranslator`.
+
+The configuration name is an arbitrary type (normally a string) to retrieve a configuration value from a given deserialized node value. For example, this could be an XPath string for an XML node type, or a configuration string for a `YAML::Node` from YamlCpp. This is all handled by the Translation scheme, explained in more detail below.
 
 ####Example
 
@@ -43,7 +45,7 @@ const ExampleTranslator translator = ExampleTranslator()
   .add_member("my.string", &ExampleClass::my_string);
 ```
 
-### Using custom types
+###Using custom types (Advanced)
 
 If the default types of `bool`, `int`, `float`, `std::string` don't work for the specific purpose, or if the string for the configuration
 nodes needs to be of a different type, all of these are configurable by template arguments. 
@@ -96,18 +98,22 @@ Win32StructTranslator translator = Win32StructTranslator()
   // first params are wide string because KeyT is std::wstring
 ```
 
-### Creating a Translator class
+###Creating a Translation Scheme class
 
-A translator class needs to satisfy a very simple set of functionalities. 
+A translation scheme class needs to satisfy a very simple set of functionalities. 
 
-The Translator concept is:
+There are two types of translation schemes:
+ - `ScalarTranslationScheme` used for translating single entries at a time
+ - `SequenceTranslationScheme` used for translating sequences of entries.
 
-####Requirements
+####ScalarTranslationScheme Concept
+
+#####Requirements
 
 - **T** Translator Type;
 - **t** object of type **const T**.
 
-####Functions
+#####Functions
 
 | expression                           | return                       | semantics                                                                                                                                               |
 |--------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -127,7 +133,7 @@ The Translator concept is:
 As long as a translator supports these functions, it can be used with the `DataTranslator` to translate data to a `struct` or `class`. This would normally
 be done in the form of a wrapper around the node returned by the deserialization library of your choice.
 
-#### Example
+#####Example
 
 An example dummy translator class that can only convert boolean with identifier "b" to `true`,
 integer "i" to `42`, float "f" to `3.14`, and `std::string` "s" to "hello world".
@@ -137,15 +143,7 @@ class DummyTranslator {
 public:
   std::size_t size(std::string) const{ return 0; }
 
-  bool has_bool(std::string x) const{ return x=="b"; }
-  bool has_int(std::string x) const{ return x=="i"; }
-  bool has_float(std::string x) const{ return x=="f"; }
-  bool has_string(std::string x) const{ return x=="s"; }
-
-  bool has_bool_sequence(std::string ) const{ return false; }
-  bool has_int_sequence(std::string ) const{ return false; }
-  bool has_float_sequence(std::string ) const{ return false; }
-  bool has_string_sequence(std::string ) const{ return false; }
+  bool has(std::string x) const{ return true; }
 
   bool        as_bool(std::string) const{ return true; }
   int         as_int(std::string) const{ return 42; }
@@ -168,6 +166,23 @@ public:
 
 To create a more complicated translator, you can write a wrapper around the desired node
 type, such as mapping `YAML::Node`'s `as<int>()` to `as_int()`.
+
+####SequenceTranslationScheme
+
+#####Requirements
+
+- **T** Translator Type;
+- **t** object of type **T**.
+
+#####Relationship
+
+- `SequenceTranslationScheme` is also a `ScalarTranslationScheme`.
+
+#####Functions
+
+| expression                           | return                       | semantics                                                                                                                                               |
+|--------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `t.next()`                     | convertible to `bool` | Iterates to the next entry in the sequence, if one exists. returns `true` if there is an entry, `false` otherwise.                                                     |
 
 ### Complete Example
 

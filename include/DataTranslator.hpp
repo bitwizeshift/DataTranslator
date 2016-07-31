@@ -1,42 +1,24 @@
 /**
- * \file DataTranslator
+ * \file DataTranslator.hpp
  *
  * \brief This is the main header for the DataTranslator standalone library.
  *
  * \author Matthew Rodusek (matthew.rodusek@gmail.com)
  */
 
-#ifndef DATATRANSLATOR_HPP_
-#define DATATRANSLATOR_HPP_
+#ifndef DATATRANSLATOR_DATATRANSLATOR_HPP_
+#define DATATRANSLATOR_DATATRANSLATOR_HPP_
 
 #if __cplusplus < 201103L
 # error This file requires compiler and library support for the ISO C++11 standard.
 #endif
 
+#include "concepts.hpp"
+
 #include <unordered_map>
 #include <string>
 #include <cstring>
 #include <vector>
-
-//
-// Concept: ScalarTranslator
-//
-// Required Functions:
-//
-// - std::size_t size(string) const
-//
-// - bool has(string) const;
-//
-// - bool_type   as_bool(string) const;
-// - int_type    as_int(string) const;
-// - float_type  as_float(string) const;
-// - string_type as_string(string) const;
-//
-// - void as_bool_sequence(string, Func) const;
-// - void as_int_sequence(string, Func) const;
-// - void as_float_sequence(string, Func) const;
-// - void as_string_sequence(string, Func) const;
-//
 
 namespace serial {
 
@@ -122,7 +104,7 @@ namespace serial {
   public:
 
     /// \brief Initializes the Data Translator with the specified binary data
-    DataTranslator() = default;
+    DataTranslator( ) = default;
 
     //-------------------------------------------------------------------------
     // Capacity
@@ -186,7 +168,8 @@ namespace serial {
     /// \param member the boolean vector pointer-to-member to translate
     ///
     /// \return reference to (*this) to allow chaining calls
-    this_type& add_bool_vector_member( const key_string_type& name, bool_vector_member member );
+    this_type& add_bool_vector_member( const key_string_type& name,
+                                       bool_vector_member member );
 
     /// \brief Adds an integral vector pointer-to-member
     ///
@@ -194,7 +177,8 @@ namespace serial {
     /// \param member the integral vector pointer-to-member to translate
     ///
     /// \return reference to (*this) to allow chaining calls
-    this_type& add_int_vector_member( const key_string_type& name, int_vector_member member );
+    this_type& add_int_vector_member( const key_string_type& name,
+                                      int_vector_member member );
 
     /// \brief Adds a floating point vector pointer-to-member
     ///
@@ -202,7 +186,8 @@ namespace serial {
     /// \param member the floating point vector pointer-to-member to translate
     ///
     /// \return reference to (*this) to allow chaining calls
-    this_type& add_float_vector_member( const key_string_type& name, float_vector_member member );
+    this_type& add_float_vector_member( const key_string_type& name,
+                                        float_vector_member member );
 
     /// \brief Adds a string vector pointer-to-member
     ///
@@ -210,7 +195,8 @@ namespace serial {
     /// \param member the string vector pointer-to-member to translate
     ///
     /// \return reference to (*this) to allow chaining calls
-    this_type& add_string_vector_member( const key_string_type& name, string_vector_member member );
+    this_type& add_string_vector_member( const key_string_type& name,
+                                         string_vector_member member );
 
     //-------------------------------------------------------------------------
     // Overloaded Member Loaders
@@ -220,30 +206,38 @@ namespace serial {
     // Scalar types
 
     /// \copydoc DataTranslator::add_bool_member
-    this_type& add_member( const key_string_type& name, bool_member member );
+    this_type& add_member( const key_string_type& name,
+                           bool_member member );
 
     /// \copydoc DataTranslator::add_int_member
-    this_type& add_member( const key_string_type& name, int_member member );
+    this_type& add_member( const key_string_type& name,
+                           int_member member );
 
     /// \copydoc DataTranslator::add_float_member
-    this_type& add_member( const key_string_type& name, float_member member );
+    this_type& add_member( const key_string_type& name,
+                           float_member member );
 
     /// \copydoc DataTranslator::add_string_member
-    this_type& add_member( const key_string_type& name, string_member member );
+    this_type& add_member( const key_string_type& name,
+                           string_member member );
 
     // Vector types
 
     /// \copydoc DataTranslator::add_bool_vector_member
-    this_type& add_member( const key_string_type& name, bool_vector_member member );
+    this_type& add_member( const key_string_type& name,
+                           bool_vector_member member );
 
     /// \copydoc DataTranslator::add_int_vector_member
-    this_type& add_member( const key_string_type& name, int_vector_member member );
+    this_type& add_member( const key_string_type& name,
+                           int_vector_member member );
 
     /// \copydoc DataTranslator::add_float_vector_member
-    this_type& add_member( const key_string_type& name, float_vector_member member );
+    this_type& add_member( const key_string_type& name,
+                           float_vector_member member );
 
     /// \copydoc DataTranslator::add_string_vector_member
-    this_type& add_member( const key_string_type& name, string_vector_member member );
+    this_type& add_member( const key_string_type& name,
+                           string_vector_member member );
 
     //-------------------------------------------------------------------------
     // Loaders
@@ -255,8 +249,9 @@ namespace serial {
     /// \param object The object to be populated with data
     /// \param data   The data to translate into the structures
     /// \return the number of members translated
-    template<typename Translator>
-    size_type translate( value_type* object, const Translator& data ) const;
+    template<typename ScalarTranslationScheme>
+    size_type translate( value_type* object,
+                         const ScalarTranslationScheme& data ) const;
 
     /// \brief Translates a single data bin into an array of structures
     ///
@@ -264,10 +259,10 @@ namespace serial {
     /// \param size    The size of the array to translate
     /// \param data    The binary data to translate into the structure
     /// \return the number of members translated in one entry
-    template<typename Translator>
+    template<typename ScalarTranslationScheme>
     size_type translate_uniform( value_type* objects,
                                  size_type size,
-                                 const Translator& data ) const;
+                                 const ScalarTranslationScheme& data ) const;
 
     /// \brief Translates a sequence of structures into the appropriate
     ///        data type
@@ -275,9 +270,9 @@ namespace serial {
     /// \param it the output iterator to use for insertions
     /// \param data the data to insert
     /// \return the number of members translated in all entries
-    template<typename OutputIterator, typename Translator>
+    template<typename OutputIterator, typename SequenceTranslationScheme>
     size_type translate_sequence( OutputIterator it,
-                                  const Translator& data ) const;
+                                  SequenceTranslationScheme& data ) const;
 
     /// \brief Translates a sequence of structures into the appropriate
     ///        data type with a bounded size
@@ -286,10 +281,10 @@ namespace serial {
     /// \param size the max number of entries to translate
     /// \param data the data to insert
     /// \return the number of members translated in all entries
-    template<typename OutputIterator, typename Translator>
+    template<typename OutputIterator, typename SequenceTranslationScheme>
     size_type translate_sequence( OutputIterator it,
-                                  std::size_t size,
-                                  const Translator& data ) const;
+                                  size_type size,
+                                  SequenceTranslationScheme& data ) const;
 
 
     //-------------------------------------------------------------------------
@@ -337,9 +332,9 @@ namespace serial {
     /// \param data the data to translate
     ///
     /// \return the number of scalars successfully translated
-    template<typename Translator>
+    template<typename TranslationScheme>
     size_type translate_scalar_data( value_type* object,
-                                     const Translator& data ) const;
+                                     const TranslationScheme& data ) const;
 
     /// \brief Translate all vector entries into the specified objects
     ///
@@ -347,9 +342,9 @@ namespace serial {
     /// \param data the data to translate
     ///
     /// \return the number of vector successfully translated
-    template<typename Translator>
+    template<typename TranslationScheme>
     size_type translate_vector_data( value_type* object,
-                                     const Translator& data ) const;
+                                     const TranslationScheme& data ) const;
 
   };
 
