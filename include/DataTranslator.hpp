@@ -10,7 +10,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Matthew Rodusek
+ * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+ * Copyright (c) 2016 Matthew Rodusek <http://rodusek.me>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,7 @@
 # error This file requires compiler and library support for the ISO C++11 standard.
 #endif
 
-#include "concepts.hpp"
+#include "detail/concepts.hpp"
 
 #include <unordered_map>
 #include <string>

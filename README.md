@@ -1,29 +1,69 @@
-# Data Translator (Standalone)
+#Data Translator (Standalone)
+_v1.0_
+[![Build Status](https://travis-ci.org/bitwizeshift/DataTranslator.svg?branch=master)](https://travis-ci.org/bitwizeshift/DataTranslator)
+[![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](http://bitwizeshift.github.io/DataTranslator)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/DataTranslator/master/LICENSE)
 
-This is a standalone implementation of the original DataTranslator found in the [Serial](https://github.com/bitwizeshift/Serial) repository. 
-This `DataTranslator` supports translation between any arbitrary data node (such as a node received from `RapidXML`, `RapidJson`, `YamlCpp`, etc)
-by providing a Translation scheme.
+##What is Data Translator?
 
-## Features
+`DataTranslator` is a simple way of translating serialized data into C++ structures. 
+Normally, translating data from nodes retrieved from deserializing libraries requires 
+a lot of boiler-plate code, and can become even more cumbersome to translate into each
+individual member of a given `struct` or `class`. 
 
-- Compatible with C++11 and above
-- Translation of arbitrary deserialized data through use of an adapter
+`DataTranslator` relieves the burden by abstracting away the concept of a data node, 
+and allowing for seamless translation of multiple objects at a time!
+
+**Note**: This is a standalone implementation of the original DataTranslator found in the [Serial](https://github.com/bitwizeshift/Serial) repository. 
+
+##Features
+
+- Written in C++11 and above
+- Compatible with most major compilers (see compatibility)
+- Compatible with most major deserializing libraries, such as **YamlCpp**, **RapidXML**, **RapidJSON**, etc. (Requires a "Translation Scheme" described later)
 - Configurable value types, allowing custom pointer-to-members to be used
-- Support for both scalar values and sequences of entires through `std::vector`
-- Lightweight implementation to allow for quick translation of types 
+- Support for both scalar values and sequences of entries through `std::vector`
+- Lightweight implementation to allow for quick translation of types
+- Works with single entries, uniform copying of multiple entries, and sequences of entries 
 
-## How It Works
+##Use
 
-## Use
+###Getting Started
+
+The single header file, `DataTranslator.hpp` is in the `include` directory. 
+Simply include this file with 
+
+```c++
+#include <DataTranslator.hpp>
+```
+
+to begin working with this library. See below for constructing `DataTranslator` classes
+
+**Note** Make sure that the compiler is using c++11 or greater in order for this to work 
+(the library will fail with a message stating as such otherwise).
 
 ###Constructing a `DataTranslator`
 
-To construct a data translator, include the header '`DataTranslator.hpp`' and construct a `serial::DataTranslator` templated on the type of the `struct` or `class` to translate. 
-Then, make calls to `add_member` supplying the configuration name and the pointer-to-members that are to be translated. 
+`serial::DataTranslator` is a templated class that requires at least one argument _T_ for the 
+`struct` or `class` that will be populated.
 
-Calls to `add_member` can be chained in order to create a single `const` instance of a `DataTranslator`.
+I recommend using type aliasing to simplify the name (or `typedef` if you're old-school):
 
-The configuration name is an arbitrary type (normally a string) to retrieve a configuration value from a given deserialized node value. For example, this could be an XPath string for an XML node type, or a configuration string for a `YAML::Node` from YamlCpp. This is all handled by the Translation scheme, explained in more detail below.
+```c++
+// Translates the struct/class 'ExampleClass'
+using ExampleDataTranslator = serial::DataTranslator<ExampleClass>; 
+
+auto translator = ExampleDataTranslator();
+ ```
+
+To specify the data members that are to be translated within the specified class, make 
+calls to `add_member` supplying the name of the configuration node from the serialized library,
+and the pointer-to-members of that object to be translated. Calls to `add_member` can be chained
+in order to create a single `const` instance of a `DataTranslator.
+
+
+The configuration node name can be any arbitrary type (normally a string) to retrieve a configuration value from a given deserialized node. For example, this could be an XPath string for an XML node type, or a configuration string for a `YAML::Node` from YamlCpp. How this string is managed is determined
+by the Translation Scheme (explained below) and the underlying node type.
 
 ####Example
 
@@ -43,12 +83,12 @@ const ExampleTranslator translator = ExampleTranslator()
   .add_member("my.int", &ExampleClass::my_int)
   .add_member("my.float", &ExampleClass::my_float)
   .add_member("my.string", &ExampleClass::my_string);
-```
+``
 
 ###Using custom types (Advanced)
 
-If the default types of `bool`, `int`, `float`, `std::string` don't work for the specific purpose, or if the string for the configuration
-nodes needs to be of a different type, all of these are configurable by template arguments. 
+If the default types of `bool`, `int`, `float`, `std::string` don't work for the translated types,
+this is all configurable by further template arguments
 
 The template arguments are, in order:
 
@@ -76,16 +116,18 @@ struct Win32Struct
   std::wstring my_string;
 };
 
-typedef DataTranslator<Win32Struct,
-                       BOOL,
-                       DWORD,
-                       double,
-                       std::wstring,
-                       std::wstring> Win32StructTranslator;
+using Win32StructTranslator = DataTranslator<Win32Struct,
+                                             BOOL,
+											                       DWORD,
+											                       double,
+											                       std::wstring,
+											                       std::wstring>;
 ```
 
-If a situation occurs where two types are the same (in the previous example, `BOOL` is normally implemented as `int`), then the unambiguous/verbose
-member loaders are required to disambiguate the call. 
+If a situation occurs where two types are the same (in the previous example, `BOOL` is normally implemented as `int`), then the calls can be disambiguated by using the _verbose_ loader functions
+in order to be explicit.
+
+The verbose loaders are identical to the `add_member` call, except that it is not overloaded.
 
 ####Example
 
@@ -233,3 +275,36 @@ The above example, when compiled with `gcc 5.3.0` is the following:
 3.14
 hello world
 ```
+
+### Further Examples
+
+Below are some fully implemented translation scheme examples wrapper around 
+existing deserialization libraries:
+
+```todo: upload examples```
+
+## License
+
+<img align="right" src="http://opensource.org/trademarks/opensource/OSI-Approved-License-100x137.png">
+
+The class is licensed under the [MIT License](http://opensource.org/licenses/MIT):
+
+Copyright &copy; 2016 [Matthew Rodusek](http://rodusek.me/)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
