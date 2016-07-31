@@ -1,5 +1,5 @@
-#ifndef DETAIL_CONCEPTS_INL_
-#define DETAIL_CONCEPTS_INL_
+#ifndef DATATRANSLATOR_DETAIL_CONCEPTS_INL_
+#define DATATRANSLATOR_DETAIL_CONCEPTS_INL_
 
 namespace serial {
   namespace concepts {
@@ -195,4 +195,4 @@ namespace serial {
   } // namespace concepts
 } // namespace serial
 
-#endif /* DETAIL_CONCEPTS_INL_ */
+#endif /* DATATRANSLATOR_DETAIL_CONCEPTS_INL_ */

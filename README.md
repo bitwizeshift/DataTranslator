@@ -233,7 +233,3 @@ The above example, when compiled with `gcc 5.3.0` is the following:
 3.14
 hello world
 ```
-
-## Todo
-
-- Support array and vector translations
