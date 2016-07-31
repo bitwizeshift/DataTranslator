@@ -105,6 +105,10 @@ A translation scheme class needs to satisfy a very simple set of functionalities
 There are two types of translation schemes:
  - `ScalarTranslationScheme` used for translating single entries at a time
  - `SequenceTranslationScheme` used for translating sequences of entries.
+ 
+**Note**: It is up to the implementation of Translation Scheme as to how to handle error 
+cases, such as a value being requested by an incorrect type. This is to allow for native
+exceptions to be caught/thrown depending on the type wrapped by the translation scheme.
 
 ####ScalarTranslationScheme Concept
 
