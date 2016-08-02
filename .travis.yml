@@ -1,6 +1,7 @@
 language: cpp
 
 dist: trusty
+sudo: required
 
 matrix:
   include:
@@ -127,6 +128,6 @@ matrix:
        - CXXFLAGS=-lstdc++
 
 script:
-	-	$COMPILER --version
+  - $COMPILER --version
   - make CXX=$COMPILER
        
