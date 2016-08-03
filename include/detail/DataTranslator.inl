@@ -1,6 +1,8 @@
 #ifndef DATATRANSLATOR_DETAIL_DATATRANSLATOR_INL_
 #define DATATRANSLATOR_DETAIL_DATATRANSLATOR_INL_
 
+
+
 namespace serial {
 
   //--------------------------------------------------------------------------
@@ -12,10 +14,10 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::members()
     const noexcept
   {
-    return (m_bool_members.size() + m_bool_vector_members.size() +
-            m_int_members.size()  + m_int_vector_members.size() +
-            m_float_members()     + m_float_vector_members.size() +
-            m_string_members()    + m_string_vector_members.size());
+    return (m_bool_members.size()   + m_bool_vector_members.size() +
+            m_int_members.size()    + m_int_vector_members.size() +
+            m_float_members.size()  + m_float_vector_members.size() +
+            m_string_members.size() + m_string_vector_members.size());
   }
 
   //--------------------------------------------------------------------------
@@ -27,6 +29,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_bool_member( const key_string_type& name,
                                                   bool_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_bool_members[ name ] = member;
     return (*this);
   }
@@ -36,6 +43,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_int_member( const key_string_type& name,
                                                  int_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_int_members[ name ] = member;
     return (*this);
   }
@@ -45,6 +57,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_float_member( const key_string_type& name,
                                                    float_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_float_members[ name ] = member;
     return (*this);
   }
@@ -54,6 +71,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_string_member( const key_string_type& name,
                                                     string_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_string_members[ name ] = member;
     return (*this);
   }
@@ -65,6 +87,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_bool_vector_member( const key_string_type& name,
                                                          bool_vector_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_bool_vector_members[ name ] = member;
     return (*this);
   }
@@ -74,6 +101,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_int_vector_member( const key_string_type& name,
                                                         int_vector_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_int_vector_members[ name ] = member;
     return (*this);
   }
@@ -83,6 +115,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_float_vector_member( const key_string_type& name,
                                                           float_vector_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_float_vector_members[ name ] = member;
     return (*this);
   }
@@ -92,6 +129,11 @@ namespace serial {
     DataTranslator<T,B,I,F,S,K>::add_string_vector_member( const key_string_type& name,
                                                            string_vector_member member )
   {
+#ifdef DEBUG
+    if( has_member(name) ) {
+      throw std::runtime_error("Duplicate member '" + name + "' added.");
+    }
+#endif
     m_string_vector_members[ name ] = member;
     return (*this);
   }
@@ -164,6 +206,20 @@ namespace serial {
                                              string_vector_member member )
   {
     return add_string_vector_member(name,member);
+  }
+
+  template<typename T, typename B, typename I, typename F, typename S, typename K>
+  inline bool
+    DataTranslator<T,B,I,F,S,K>::has_member( const key_string_type& name )
+  {
+    return m_bool_members.find(name)!=m_bool_members.end() ||
+           m_int_members.find(name)!=m_int_members.end() ||
+           m_float_members.find(name)!=m_float_members.end() ||
+           m_string_members.find(name)!=m_string_members.end() ||
+           m_bool_vector_members.find(name)!=m_bool_vector_members.end() ||
+           m_int_vector_members.find(name)!=m_int_vector_members.end() ||
+           m_float_vector_members.find(name)!=m_float_vector_members.end() ||
+           m_string_vector_members.find(name)!=m_string_vector_members.end();
   }
 
   //--------------------------------------------------------------------------

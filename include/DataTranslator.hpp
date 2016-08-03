@@ -265,6 +265,12 @@ namespace serial {
     this_type& add_member( const key_string_type& name,
                            string_vector_member member );
 
+    /// \brief Checks if this DataTranslator already has a member with the
+    ///        given key string name
+    ///
+    /// \return \c true if this DataTranslator contains a member named \p name
+    bool has_member( const key_string_type& name );
+
     //-------------------------------------------------------------------------
     // Loaders
     //-------------------------------------------------------------------------

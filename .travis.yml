@@ -130,4 +130,5 @@ matrix:
 script:
   - $COMPILER --version
   - make CXX=$COMPILER
+  - ./data_translator
        
