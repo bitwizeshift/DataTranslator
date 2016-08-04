@@ -18,13 +18,13 @@ and allowing for seamless translation of multiple objects at a time!
 
 ##Features
 
-- Written in C++11 and above
-- Compatible with most major compilers (see compatibility)
-- Compatible with most major deserializing libraries, such as **YamlCpp**, **RapidXML**, **RapidJSON**, etc. (Requires a "Translation Scheme" described later)
-- Configurable value types, allowing custom pointer-to-members to be used
-- Support for both scalar values and sequences of entries through `std::vector`
-- Lightweight implementation to allow for quick translation of types
-- Works with single entries, uniform copying of multiple entries, and sequences of entries 
+- Written in modern C++11 code 
+- Compatible with most major compilers
+- Compatible with most major deserializing libraries, such as **YamlCpp**, **RapidXML**, **RapidJSON**, - Implementation is fast and lightweight to allow for quick translation of types
+- Highly configurable, enabling support for almost any fundamental member type
+- Supports translation of both scalar members and vector members of a given type
+etc. (Requires a "Translation Scheme" described later)
+- Can translate single entries, uniform copying of multiple entries, and groups of entries at a single time
 
 ##Use
 
@@ -83,7 +83,7 @@ const ExampleTranslator translator = ExampleTranslator()
   .add_member("my.int", &ExampleClass::my_int)
   .add_member("my.float", &ExampleClass::my_float)
   .add_member("my.string", &ExampleClass::my_string);
-``
+```
 
 ###Using custom types (Advanced)
 
