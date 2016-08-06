@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/bitwizeshift/DataTranslator.svg?branch=master)](https://travis-ci.org/bitwizeshift/DataTranslator)
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](http://bitwizeshift.github.io/DataTranslator)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/DataTranslator/master/LICENSE)
+[![Compiler Support](https://img.shields.io/badge/compilers-gcc%20%7C%20clang-blue.svg)]()
 
 ##What is Data Translator?
 
@@ -281,6 +282,24 @@ Below are some fully implemented translation scheme examples wrapper around
 existing deserialization libraries:
 
 ```todo: upload examples```
+
+## Tested Compilers
+
+The following compilers are currently being tested through continuous integration with [Travis](https://travis-ci.org/bitwizeshift/DataTranslator).
+
+| Compiler        | Operating System                   |
+|-----------------|------------------------------------|
+| g++ 4.8.5       | Ubuntu 14.04.1 TLS                 |
+| g++ 4.9.3       | Ubuntu 14.04.4 TLS                 |
+| g++ 5.3.0       | Ubuntu 14.04.4 TLS                 |
+| g++ 6.1.1       | Ubuntu 14.04.1 TLS                 |
+| clang 3.5.0     | Ubuntu 14.04.1 TLS                 |
+| clang 3.6.2     | Ubuntu 14.04.1 TLS                 |
+| clang xcode 6.0 | Darwin Kernel 13.4.0 (OSX 10.9.5)  |
+| clang xcode 6.1 | Darwin Kernel 14.3.0 (OSX 10.9.5)  |
+| clang xcode 7.0 | Darwin Kernel 14.5.0 (OSX 10.10.5) |
+| clang xcode 7.3 | Darwin Kernel 15.5.0 (OSX 10.11.5) |
+| clang xcode 8.0 | Darwin Kernel 15.6.0 (OSX 10.11.5) |
 
 ## License
 
