@@ -41,7 +41,7 @@
 
 #include "detail/concepts.hpp"
 
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <cstring>
 #include <vector>
@@ -325,16 +325,16 @@ namespace serial {
   private:
 
     // Scalar member mapping
-    typedef std::unordered_map<std::string, bool_member>   bool_member_map;
-    typedef std::unordered_map<std::string, int_member>    int_member_map;
-    typedef std::unordered_map<std::string, float_member>  float_member_map;
-    typedef std::unordered_map<std::string, string_member> string_member_map;
+    typedef std::map<std::string, bool_member>   bool_member_map;
+    typedef std::map<std::string, int_member>    int_member_map;
+    typedef std::map<std::string, float_member>  float_member_map;
+    typedef std::map<std::string, string_member> string_member_map;
 
     // Vector member mapping
-    typedef std::unordered_map<std::string, bool_vector_member>   bool_vector_member_map;
-    typedef std::unordered_map<std::string, int_vector_member>    int_vector_member_map;
-    typedef std::unordered_map<std::string, float_vector_member>  float_vector_member_map;
-    typedef std::unordered_map<std::string, string_vector_member> string_vector_member_map;
+    typedef std::map<std::string, bool_vector_member>   bool_vector_member_map;
+    typedef std::map<std::string, int_vector_member>    int_vector_member_map;
+    typedef std::map<std::string, float_vector_member>  float_vector_member_map;
+    typedef std::map<std::string, string_vector_member> string_vector_member_map;
 
     //-------------------------------------------------------------------------
     // Private Members

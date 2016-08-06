@@ -1,5 +1,4 @@
-#Data Translator (Standalone)
-_v1.0_
+#Data Translator
 [![Build Status](https://travis-ci.org/bitwizeshift/DataTranslator.svg?branch=master)](https://travis-ci.org/bitwizeshift/DataTranslator)
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](http://bitwizeshift.github.io/DataTranslator)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/DataTranslator/master/LICENSE)
