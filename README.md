@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/bitwizeshift/DataTranslator.svg?branch=master)](https://travis-ci.org/bitwizeshift/DataTranslator)
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](http://bitwizeshift.github.io/DataTranslator)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/bitwizeshift/DataTranslator/master/LICENSE)
-[![Compiler Support](https://img.shields.io/badge/compilers-gcc%20%7C%20clang-blue.svg)]()
+[![Compiler Support](https://img.shields.io/badge/compilers-gcc%20%7C%20clang-blue.svg)](#tested-compilers)
 
 ##What is Data Translator?
 
@@ -283,7 +283,7 @@ existing deserialization libraries:
 
 ```todo: upload examples```
 
-## Tested Compilers
+##<a name="tested-compilers"></a> Tested Compilers
 
 The following compilers are currently being tested through continuous integration with [Travis](https://travis-ci.org/bitwizeshift/DataTranslator).
 
