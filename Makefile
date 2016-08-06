@@ -13,13 +13,13 @@ clean:
 
 # build unit tests
 main.o: test/main.cpp
-	$(CXX) -std=c++11 $(CPPFLAGS) -I include -c test/main.cpp
+	$(CXX) -std=c++11 $(CPPFLAGS) $(CXXFLAGS) -I include -c test/main.cpp
 
 DataTranslatorTests.o: test/DataTranslatorTests.cpp
-	$(CXX) -std=c++11 $(CPPFLAGS) -I include -c test/DataTranslatorTests.cpp
+	$(CXX) -std=c++11 $(CPPFLAGS) $(CXXFLAGS) -I include -c test/DataTranslatorTests.cpp
 
 DummyTranslator.o: test/DummyTranslator.cpp
-	$(CXX) -std=c++11 $(CPPFLAGS) -I include -c test/DummyTranslator.cpp
+	$(CXX) -std=c++11 $(CPPFLAGS) $(CXXFLAGS) -I include -c test/DummyTranslator.cpp
 	
 data_translator: main.o DataTranslatorTests.o DummyTranslator.o test/catch.hpp
-	$(CXX) -std=c++11 $(CPPFLAGS) -I include main.o DataTranslatorTests.o DummyTranslator.o -o data_translator
+	$(CXX) -std=c++11 $(CPPFLAGS) $(CXXFLAGS) -I include main.o DataTranslatorTests.o DummyTranslator.o -o data_translator
